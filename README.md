@@ -1,4 +1,4 @@
-# JSONsharp Quick Guide
+# JSON.cs Quick Guide
 
 `JSON` is a value-oriented C# type representing an ordinary JSON value:
 
