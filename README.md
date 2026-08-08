@@ -24,8 +24,7 @@ JSON number = new JSON(3.14);
 
 ## Reading values
 
-Typed properties return nullable values when the current JSON shape does not
-provide the requested interpretation:
+Typed accessors return optionals and fail with `null` when the type is wrong:
 
 ```csharp
 value.String    // string?
@@ -35,10 +34,9 @@ value.Bool      // bool?
 value.Object    // detached Dictionary<string, JSON>?
 value.Array     // detached List<JSON>?
 value.IsNull    // bool
-value.Proxy     // IJSONProxy?
 ```
 
-`Number` and `Int` also interpret strings when the corresponding .NET parser accepts them. `Int` converts a double when it has no decimal.
+The `.int` accessor converts a decimal value only when it has no fractional part.
 
 Object keys and array indexes return `JSON?`:
 
@@ -69,10 +67,24 @@ Assigning `null` removes an object key or array element:
 value["temporary"] = null;
 ```
 
-Use `JSON.Null` to retain an explicit JSON null:
+Use `JSON.Null` to retain a key or element as JSON null:
 
 ```csharp
 value["middleName"] = JSON.Null;
+```
+
+Array mutation uses zero-based indexes:
+
+```csharp
+var numbers: JSON.NewArray([ new JSON(10), new JSON(20), new JSON(30) ]);
+numbers[1] = new JSON(25);
+numbers[0] = null;       // removes the first element
+```
+
+Object members can also be removed explicitly:
+
+```csharp
+value.RemoveValue(forKey: "name");
 ```
 
 `Object` and `Array` return detached snapshots. Mutating one does not mutate
@@ -83,8 +95,8 @@ JSON state = JSON.NewObject();
 state["count"] = 1;
 
 var snapshot = state;
-snapshot["count"] = new JSON(2);
-// state["count"] is still 1
+state["count"] = new JSON(2);
+// snapshot["count"] is still 1
 ```
 
 ## Paths
