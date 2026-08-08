@@ -12,7 +12,7 @@ Use compact literals to construct values:
 
 ```csharp
 JSON person = JSON.NewObject(
-    ("name", "Ada"),
+    ("name", "Øystein"),
     ("age", 36),
     ("admin", true),
     ("tags", JSON.NewArray( "math", "programming" )),
