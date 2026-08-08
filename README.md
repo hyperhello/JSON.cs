@@ -55,9 +55,7 @@ string? firstTag = person["tags"]?[0]?.String;
 Standalone assignments should be wrapped explicitly:
 
 ```csharp
-JSON first = JSON.NewObject(
-    ("name", new JSON("Abel")),
-    ("age", new JSON(46)));
+JSON first = JSON.NewObject( ("name", new JSON("Abel")), ("age", new JSON(46)) );
 JSON second = first;
 
 var second["name"] = new JSON("Zippel");
