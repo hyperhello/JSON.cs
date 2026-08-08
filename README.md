@@ -12,14 +12,13 @@ Use compact literals to construct values:
 
 ```csharp
 JSON person = JSON.NewObject(
-    ("name", new JSON("Ada")),
-    ("age", new JSON(36)),
-    ("admin", new JSON(true)),
-    ("tags", JSON.NewArray(
-        new JSON("math"), new JSON("programming"))),
+    ("name", "Ada"),
+    ("age", 36),
+    ("admin", true),
+    ("tags", JSON.NewArray( "math", "programming" )),
     ("middleName", JSON.Null));
 
-JSON number = new JSON(3.14);
+JSON number = 3.14;
 ```
 
 ## Reading values
