@@ -36,7 +36,7 @@ value.Array     // detached List<JSON>?
 value.IsNull    // bool
 ```
 
-The `.int` accessor converts a decimal value only when it has no fractional part.
+The `.Int` accessor converts a decimal value only when it has no fractional part.
 
 Object keys and array indexes return `JSON?`:
 
@@ -50,15 +50,13 @@ string? firstTag = person["tags"]?[0]?.String;
 
 `JSON` has value semantics. Assigning it creates an independent value logically, while arrays and dictionaries benefit from copy-on-write storage.
 
-Standalone assignments should be wrapped explicitly:
-
 ```csharp
-JSON first = JSON.NewObject( ("name", new JSON("Abel")), ("age", new JSON(46)) );
+JSON first = JSON.NewObject( ("name", "Abel"), ("age", 46) );
 JSON second = first;
 
-var second["name"] = new JSON("Zippel");
-var second["age"] = new JSON(37);
-var second["active"] = new JSON(true);
+second["name"] = "Zippel";
+second["age"] = 37;
+second["active"] = true;
 ```
 
 Assigning `null` removes an object key or array element:
@@ -76,26 +74,25 @@ value["middleName"] = JSON.Null;
 Array mutation uses zero-based indexes:
 
 ```csharp
-var numbers: JSON.NewArray([ new JSON(10), new JSON(20), new JSON(30) ]);
-numbers[1] = new JSON(25);
+var numbers = JSON.NewArray([ 10, 20, 30 ]);
+numbers[1] = 25;
 numbers[0] = null;       // removes the first element
 ```
 
 Object members can also be removed explicitly:
 
 ```csharp
-value.RemoveValue(forKey: "name");
+value.RemoveValue("name");
 ```
 
-`Object` and `Array` return detached snapshots. Mutating one does not mutate
-the original `JSON`:
+`Object` and `Array` return detached snapshots. Mutating one does not mutate the original `JSON`:
 
 ```csharp
 JSON state = JSON.NewObject();
 state["count"] = 1;
 
 var snapshot = state;
-state["count"] = new JSON(2);
+state["count"] = 2;
 // snapshot["count"] is still 1
 ```
 
@@ -148,7 +145,7 @@ JSON.Stringify(new JSON("Hello World")); // "Hello World"
 Object keys are sorted during serialization. `NaN` and infinity are rejected
 because they are not valid JSON numbers.
 
-## JSON proxies
+## IJSONProxy interface
 
 `IJSONProxy` provides an in-memory value that resolves whenever it is read or serialized. It is represented in textual JSON exactly the same as its resolved JSON and is useful for live or externally owned values:
 
@@ -178,10 +175,7 @@ sealed class Settings : IJSONProxy
     public string Title { get; set; } = "Initial";
     public int Skip { get; set; } = 1;
 
-    public JSON ResolveJSONProxy() =>
-    JSON.NewObject(
-        ("title", new JSON(Title)),
-        ("skip", new JSON(Skip)));
+    public JSON ResolveJSONProxy() => JSON.NewObject( ("title", new JSON(Title)), ("skip", new JSON(Skip)) );
 
     public void SetJSONProxyValue(JSON key, JSON? value)
     {
@@ -236,9 +230,6 @@ on the path:
 ```text
 dotnet run
 ```
-
-The project targets modern .NET so that `IJSONProxy` can provide default
-implementations for its optional hooks.
 
 ## Licensing for use
 
