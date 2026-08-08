@@ -50,17 +50,19 @@ string? firstTag = person["tags"]?[0]?.String;
 
 ## Mutating values
 
-`JSON` is a value type. Container mutation clones the affected dictionary or
-list, so copies behave independently:
+`JSON` has value semantics. Assigning it creates an independent value logically, while arrays and dictionaries benefit from copy-on-write storage.
+
+Standalone assignments should be wrapped explicitly:
 
 ```csharp
-JSON value = JSON.NewObject(
+JSON first = JSON.NewObject(
     ("name", new JSON("Abel")),
     ("age", new JSON(46)));
+JSON second = first;
 
-value["name"] = new JSON("Zippel");
-value["age"] = new JSON(37);
-value["active"] = new JSON(true);
+var second["name"] = new JSON("Zippel");
+var second["age"] = new JSON(37);
+var second["active"] = new JSON(true);
 ```
 
 Assigning `null` removes an object key or array element:
